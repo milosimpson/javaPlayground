@@ -3,6 +3,7 @@ package kikkoman;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
+import org.neo4j.tooling.GlobalGraphOperations;
 
 import java.util.*;
 
@@ -59,7 +60,7 @@ public class graph {
     return node;
   }
 
-    public static void main( String[] args ) {
+  public static void main( String[] args ) {
 
     // START SNIPPET: startDb
     graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( DB_PATH );
@@ -115,13 +116,17 @@ public class graph {
         Set<String> to   = rulesTo.get(ruleNumber);
 
         for( String toProperty : to ) {
-          Node node = createAndIndexPropertyName( toProperty, ruleNumber);
+          Node node = createAndIndexPropertyName(toProperty, ruleNumber);
           toNodes.add( node );
           allNodes.add( node );
         }
 
         for( String fromProperty : from ) {
           Node fromNode = createAndIndexPropertyName( fromProperty, ruleNumber);
+
+//          System.out.println( "fromNode" + " : propertyName=" + fromNode.getProperty( PROPERTY_NAME )
+//              + " rule number=" +  fromNode.getProperty( "ruleNumber" ) );
+
           allNodes.add( fromNode );
 
           for( Node toNode : toNodes ) {
@@ -139,22 +144,68 @@ public class graph {
     }
 
     //// DELETE
-    tx = graphDb.beginTx();
-    try
-    {
-      for( Relationship rel : allRelationships ) {
-        rel.delete();
-      }
+    boolean foundSome = true;
+    int level = 0;
 
-      for( Node node : allNodes ) {
-        node.delete();
-      }
+    while( foundSome ) {
+      foundSome = false;
+
+      tx = graphDb.beginTx();
+      try
+      {
+        Iterable<Node> iter = GlobalGraphOperations.at( graphDb ).getAllNodes();
+        Set<Node> toDelete = new HashSet<Node>();
+
+        for ( Node node : iter ) {
+
+          if ( ! node.hasRelationship( Direction.INCOMING ) && node.hasProperty( PROPERTY_NAME ) ) {
+
+            System.out.println( "Level = " + level + " : propertyName = " + node.getProperty( PROPERTY_NAME )
+                + " ruleNumber = " +  node.getProperty( "ruleNumber" ) );
+
+            toDelete.add( node );
+
+            foundSome = true;
+          }
+        }
+
+        for( Node node : toDelete ) {
+          Iterable<Relationship> outgoingRels = node.getRelationships( Direction.OUTGOING );
+          for( Relationship rel : outgoingRels ) {
+            rel.delete();
+          }
+
+          node.delete();
+        }
+
+        level++;
 
       tx.success();
     }
     finally {
       tx.finish();
     }
+  }
+
+
+
+    //// DELETE
+//    tx = graphDb.beginTx();
+//    try
+//    {
+//      for( Relationship rel : allRelationships ) {
+//        rel.delete();
+//      }
+//
+//      for( Node node : allNodes ) {
+//        node.delete();
+//      }
+//
+//      tx.success();
+//    }
+//    finally {
+//      tx.finish();
+//    }
 
     // graphDb.shutdown();
   }
