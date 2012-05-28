@@ -6,3 +6,5 @@ graph/*.iml
 graph/db_files
 graph/db_files/*
 
+graph/target
+graph/target/*

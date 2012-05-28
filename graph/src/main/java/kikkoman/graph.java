@@ -2,39 +2,133 @@ package kikkoman;
 
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.index.Index;
+
+import java.util.*;
 
 /**
  *
  */
 public class graph {
 
-  private static enum RelTypes implements RelationshipType
+  private static GraphDatabaseService graphDb;
+  private static Index<Node> nodeIndex;
+
+  private static String DB_PATH = "graph/db_files";
+  private static String PROPERTY_NAME = "propertyName";
+
+  private static void registerShutdownHook()
   {
-    KNOWS
+    // Registers a shutdown hook for the Neo4j and index service instances
+    // so that it shuts down nicely when the VM exits (even if you
+    // "Ctrl-C" the running example before it's completed)
+    Runtime.getRuntime().addShutdownHook( new Thread()
+    {
+      @Override
+      public void run()
+      {
+        shutdown();
+      }
+    } );
   }
 
-  public static void main( String[] args ) {
+  private static void shutdown()
+  {
+    graphDb.shutdown();
+  }
 
-    GraphDatabaseService graphDb = new GraphDatabaseFactory().
-        newEmbeddedDatabaseBuilder("graph/db_files").
-        newGraphDatabase();
+  private static enum RelTypes implements RelationshipType
+  {
+    DEPENDS
+  }
 
+  private static Node createAndIndexPropertyName( final String propertyName, final int ruleNumber )
+  {
+    Node propertyNode = nodeIndex.get( PROPERTY_NAME, propertyName).getSingle();
+
+    if ( propertyNode != null ) {
+      System.out.println( "Found propertyName " + propertyName );
+      return propertyNode;
+    }
+
+    Node node = graphDb.createNode();
+    node.setProperty( PROPERTY_NAME, propertyName );
+    nodeIndex.add( node, PROPERTY_NAME, propertyName );
+
+    node.setProperty( "ruleNumber", ruleNumber );
+    return node;
+  }
+
+    public static void main( String[] args ) {
+
+    // START SNIPPET: startDb
+    graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( DB_PATH );
+    nodeIndex = graphDb.index().forNodes( "nodes" );
+    registerShutdownHook();
+    // END SNIPPET: startDb
+
+    List<Set<String>> rulesFrom = new ArrayList<Set<String>>(6);
+    List<Set<String>> rulesTo   = new ArrayList<Set<String>>(6);
+
+    rulesFrom.add(0, new HashSet<String>() );
+    rulesFrom.get(0).addAll( Arrays.<String>asList( "citem.clientid", "citem.type", "citem.externalid" ) );
+    rulesTo.add(0, new HashSet<String>() );
+    rulesTo.get(0).addAll( Arrays.<String>asList( "citem.id" ) );
+
+    rulesFrom.add(1, new HashSet<String>() );
+    rulesFrom.get(1).addAll( Arrays.<String>asList("citem.parents") );
+    rulesTo.add(1, new HashSet<String>() );
+    rulesTo.get(1).addAll( Arrays.<String>asList("citem[type=product].ancestorSet", "citem[type=category].ancestorSet") );
+
+    rulesFrom.add(2, new HashSet<String>() );
+    rulesFrom.get(2).addAll( Arrays.<String>asList("citem[type=product].ancestorSet") );
+    rulesTo.add(2, new HashSet<String>() );
+    rulesTo.get(2).addAll( Arrays.<String>asList("citem[type=category].numProducts") );
+
+    rulesFrom.add(3, new HashSet<String>() );
+    rulesFrom.get(3).addAll( Arrays.<String>asList("review.syn_about") );
+    rulesTo.add(3, new HashSet<String>() );
+    rulesTo.get(3).addAll( Arrays.<String>asList("citem[type=product].numReviews") );
+
+    rulesFrom.add(4, new HashSet<String>() );
+    rulesFrom.get(4).addAll( Arrays.<String>asList("review.syn_about", "review.rating") );
+    rulesTo.add(4, new HashSet<String>() );
+    rulesTo.get(4).addAll( Arrays.<String>asList("citem[type=product].avgRating") );
+
+    rulesFrom.add(5, new HashSet<String>() );
+    rulesFrom.get(5).addAll( Arrays.<String>asList("citem[type=product].ancestorSet", "citem[type=product].numReviews") );
+    rulesTo.add(5, new HashSet<String>());
+    rulesTo.get(5).addAll( Arrays.<String>asList("citem[type=category].avgRating") );
+
+    Set<Node> allNodes = new HashSet<Node>();
+    Set<Relationship> allRelationships = new HashSet<Relationship>();
+
+    //// CREATE
     Transaction tx = graphDb.beginTx();
-
-    Node firstNode;
-    Node secondNode;
-    Relationship relationship;
-
     try
     {
-      firstNode = graphDb.createNode();
-      firstNode.setProperty( "message", "Hello, " );
-      secondNode = graphDb.createNode();
-      secondNode.setProperty( "message", "World!" );
+      for( int ruleNumber = 0; ruleNumber < rulesTo.size(); ruleNumber++ ) {
 
-      relationship = firstNode.createRelationshipTo( secondNode, RelTypes.KNOWS );
-      relationship.setProperty( "message", "brave Neo4j " );
+        Set<String> from = rulesFrom.get(ruleNumber);
 
+        Set<Node> toNodes   = new HashSet<Node>();
+        Set<String> to   = rulesTo.get(ruleNumber);
+
+        for( String toProperty : to ) {
+          Node node = createAndIndexPropertyName( toProperty, ruleNumber);
+          toNodes.add( node );
+          allNodes.add( node );
+        }
+
+        for( String fromProperty : from ) {
+          Node fromNode = createAndIndexPropertyName( fromProperty, ruleNumber);
+          allNodes.add( fromNode );
+
+          for( Node toNode : toNodes ) {
+            allRelationships.add(toNode.createRelationshipTo(fromNode, RelTypes.DEPENDS));
+          }
+        }
+      }
 
       // Mutating operations go here
       tx.success();
@@ -44,18 +138,17 @@ public class graph {
       tx.finish();
     }
 
-
-    System.out.print( firstNode.getProperty( "message" ) );
-    System.out.print( relationship.getProperty( "message" ) );
-    System.out.print( secondNode.getProperty( "message" ) );
-
+    //// DELETE
     tx = graphDb.beginTx();
     try
     {
-      // let's remove the data
-      firstNode.getSingleRelationship( RelTypes.KNOWS, Direction.OUTGOING ).delete();
-      firstNode.delete();
-      secondNode.delete();
+      for( Relationship rel : allRelationships ) {
+        rel.delete();
+      }
+
+      for( Node node : allNodes ) {
+        node.delete();
+      }
 
       tx.success();
     }
@@ -63,6 +156,6 @@ public class graph {
       tx.finish();
     }
 
-    graphDb.shutdown();
+    // graphDb.shutdown();
   }
 }
