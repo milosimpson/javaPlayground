@@ -9,8 +9,11 @@
   <version>1.0</version>
   <packaging>jar</packaging>
 
-  <name>Maven Quick Start Archetype</name>
-  <url>http://maven.apache.org</url>
+  <parent>
+    <artifactId>JavaTesting</artifactId>
+    <groupId>org.kikkoman.javatesting</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
 
   <dependencies>
 
