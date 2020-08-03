@@ -1,9 +1,4 @@
 .idea/
-
 *.iml
-
-graph/*.iml
-graph/db_files
-graph/db_files/*
 
 target/
