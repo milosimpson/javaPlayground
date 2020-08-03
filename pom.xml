@@ -32,7 +32,6 @@
 
     <modules>
         <module>graph</module>
-        <module>parboiled</module>
     </modules>
     
 </project>
