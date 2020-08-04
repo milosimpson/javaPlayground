@@ -1,8 +1,12 @@
-package org.kikkoman.parity;
+package org.kikkoman.parity.simple;
 
 
 import static org.testng.Assert.assertTrue;
 
+import org.kikkoman.parity.simple.Backend;
+import org.kikkoman.parity.simple.BackendA;
+import org.kikkoman.parity.simple.BackendB;
+import org.kikkoman.parity.simple.Frontend;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;

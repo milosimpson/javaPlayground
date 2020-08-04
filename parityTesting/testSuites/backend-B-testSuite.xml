@@ -7,7 +7,7 @@
     <parameter name="backendType"  value="B"/>
 
     <packages>
-      <package name="org.kikkoman.parity.*"/>
+      <package name="org.kikkoman.parity.simple.*"/>
     </packages>
   </test>
 

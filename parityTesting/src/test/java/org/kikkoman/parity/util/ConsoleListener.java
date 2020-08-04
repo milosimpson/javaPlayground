@@ -1,4 +1,4 @@
-package org.kikkoman.parity;
+package org.kikkoman.parity.util;
 
 import org.testng.IConfigurationListener;
 import org.testng.ISuite;
@@ -7,6 +7,11 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+/*
+ * Print all the test lifecycle events to the console so we can see them.
+ * This class gets loaded by TestNg given via the Java ServiceLoader mechanism
+ *  and the resource/META-INF/services/org.testng.ITestNGListener file.
+ */
 public class ConsoleListener implements ITestListener, ISuiteListener,
       IConfigurationListener {
 

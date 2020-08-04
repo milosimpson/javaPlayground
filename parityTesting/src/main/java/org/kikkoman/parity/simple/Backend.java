@@ -1,4 +1,4 @@
-package org.kikkoman.parity;
+package org.kikkoman.parity.simple;
 
 public interface Backend {
 

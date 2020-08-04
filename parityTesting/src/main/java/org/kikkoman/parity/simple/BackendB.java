@@ -1,6 +1,6 @@
-package org.kikkoman.parity;
+package org.kikkoman.parity.simple;
 
-public class BackendA implements Backend {
+public class BackendB implements Backend {
 
   public String backendCall() {
 
@@ -9,6 +9,6 @@ public class BackendA implements Backend {
     }
     catch (Exception e) {}
 
-    return "BACKEND AAAA";
+    return "BACKEND BBBB";
   }
 }
