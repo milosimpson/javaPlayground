@@ -2,3 +2,6 @@
 *.iml
 
 target/
+
+# Mac litter
+**/.DS_Store
