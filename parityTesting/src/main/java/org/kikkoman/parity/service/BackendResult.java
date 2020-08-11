@@ -1,5 +1,6 @@
 package org.kikkoman.parity.service;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BackendResult {
@@ -11,7 +12,8 @@ public class BackendResult {
     this(backendName, true);
   }
 
-  public BackendResult(String backendName, boolean result) {
+  @JsonCreator
+  public BackendResult(@JsonProperty("backendName") String backendName, @JsonProperty("result") boolean result) {
     this.backendName = backendName;
     this.result = result;
   }

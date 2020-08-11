@@ -25,7 +25,7 @@ public class DummyApplication extends Application<DummyConfig> {
   public static class DummyResource {
 
     @GET
-    @Path("callA")
+    @Path("callOne")
     @Produces(MediaType.APPLICATION_JSON)
     public BackendResult call1() {
       // simulate work
@@ -35,7 +35,7 @@ public class DummyApplication extends Application<DummyConfig> {
     }
 
     @GET
-    @Path("callB")
+    @Path("callTwo")
     @Produces(MediaType.APPLICATION_JSON)
     public BackendResult call2() {
       // simulate work
