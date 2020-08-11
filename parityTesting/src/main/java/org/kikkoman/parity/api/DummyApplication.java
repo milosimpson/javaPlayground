@@ -13,6 +13,8 @@ public class DummyApplication extends Application<DummyConfig> {
 
   public DummyApplication(DummyConfig config) {
     super(config);
+
+
   }
 
   @Override

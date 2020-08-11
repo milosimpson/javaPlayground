@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!-- Have TestNG run each <test> in parallel -->
+<suite name="Api-Backend-Int-testSuite" parallel="tests" thread-count="2">
+
+
+  <!-- For all the test classes found, run them in parallel at the test method level-->
+  <test name="Backend-A-Int-Tests" parallel="methods" thread-count="2">
+
+<!--    <parameter name="backendType" value="A"/>-->
+<!--    <parameter name="port" value="8080"/>-->
+    <packages>
+      <package name="org.kikkoman.parity.integration.*"/>
+    </packages>
+    <classes>
+      <class name="org.kikkoman.parity.suites.SuiteBackendA"/>
+    </classes>
+  </test>
+
+
+<!--  <test name="Backend-B-Tests" parallel="methods" thread-count="2">-->
+
+<!--    <parameter name="backendType" value="B"/>-->
+<!--    <packages>-->
+<!--      <package name="org.kikkoman.parity.unit.*"/>-->
+<!--    </packages>-->
+<!--  </test>-->
+
+</suite>

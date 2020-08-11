@@ -1,4 +1,4 @@
-package org.kikkoman.parity.api;
+package org.kikkoman.parity.integration;
 
 
 import static org.testng.Assert.assertEquals;
@@ -11,30 +11,13 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.kikkoman.parity.service.BackendResult;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class ApiTestCall {
+public class ApiTest {
 
   private final Client client = ClientBuilder.newClient();
 
   private static final ObjectMapper om = new ObjectMapper();
-
-  private DummyApplication app;
-
-  @BeforeClass
-  public void setup() throws Exception {
-    DummyConfig config = new DummyConfig();
-    app = new DummyApplication(config);
-    app.start();
-  }
-
-  @AfterClass
-  public void teardown() throws Exception {
-    app.stop();
-  }
-
 
   @Test
   public void verifyCall() throws Exception {
