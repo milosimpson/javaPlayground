@@ -70,8 +70,17 @@
         </executions>
         <configuration>
           <suiteXmlFiles>
-            <file>testSuites/api-backend-integration-testSuite.xml</file>
+            <file>testSuites/backend-A-integration-testSuite.xml</file>
+            <file>testSuites/backend-B-integration-testSuite.xml</file>
           </suiteXmlFiles>
+          <properties>
+            <property>
+              <!-- can run test suites in parallel, which is neat, but may not work in practice
+                   depending on how many suites are defined...-->
+              <name>suitethreadpoolsize</name>
+              <value>2</value>
+            </property>
+          </properties>
         </configuration>
       </plugin>
     </plugins>

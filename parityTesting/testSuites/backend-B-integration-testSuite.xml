@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Api-Backend-Int-testSuite">
+
+  <!-- Parameters that are used by @BeforeSuite have to defined at the suite level,
+       which means we can't use a single xml file with two <test> tags and so would have to have
+       a suite.xml file per "backend".
+   -->
+  <!-- They are also available to the individual tests, i.e. ApiTest can get passed the port to use -->
+  <parameter name="backendType" value="B"/>
+  <parameter name="port" value="8082"/>
+
+  <test name="Backend-B-Int-Tests" parallel="classes" thread-count="2">
+
+    <packages>
+      <package name="org.kikkoman.parity.integration.*"/>
+    </packages>
+
+  </test>
+
+</suite>

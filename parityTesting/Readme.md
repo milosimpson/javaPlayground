@@ -12,3 +12,10 @@ Ideally
 
 1. Ideally we start a backend, run “all” the tests, and then shut it down.
 1. Ideally, Ideally both backends can run at the same time, and tests run in “parallel”.
+
+
+Things Learned
+==============
+
+Properties that feed into @BeforeSuite can only be set at the suite
+level in the xml file.

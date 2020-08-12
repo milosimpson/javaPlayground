@@ -42,8 +42,13 @@ public class ConsoleListener implements ITestListener, ISuiteListener,
   // TEST Cases
   @Override
   public void onTestStart(final ITestResult result) {
-    System.out.println("[TEST CASE STARTING] : " + result.getTestClass().getName()
-          + "." + result.getName());
+    if (result.getParameters().length != 0) {
+      System.out.println("[TEST CASE STARTING] : " + result.getTestClass().getName()
+            + "." + result.getName() + " with Param0:" + result.getParameters()[0]);
+    } else {
+      System.out.println("[TEST CASE STARTING] : " + result.getTestClass().getName()
+            + "." + result.getName());
+    }
   }
 
   @Override

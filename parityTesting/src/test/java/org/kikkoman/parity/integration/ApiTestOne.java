@@ -11,19 +11,37 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.kikkoman.parity.service.BackendResult;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class ApiTest {
+/*
+ * So this class works, but a downside is that when there is an error, you can easily tell
+ *  which backend and port was being used.
+ */
+public class ApiTestOne {
+
+  private final ObjectMapper om = new ObjectMapper();
 
   private final Client client = ClientBuilder.newClient();
 
-  private static final ObjectMapper om = new ObjectMapper();
+  private String hostAndPort;
+
+  @BeforeClass
+  @Parameters({ "port" })
+  public void setup(@Optional("8080") String portStr) {
+    System.out.println();
+    System.out.println("ApiTestOne configed with port:" + portStr);
+    System.out.println();
+    hostAndPort = "http://localhost:" + portStr;
+  }
 
   @Test
-  public void verifyCall() throws Exception {
+  public void verifyCallOne() throws Exception {
 
     Response response = client
-          .target("http://localhost:8080")
+          .target(hostAndPort)
           .path("dummy/callOne")
           .request(MediaType.APPLICATION_JSON)
           .get();
@@ -34,8 +52,8 @@ public class ApiTest {
     BackendResult backendResult = om.readValue(responseStr,
           new TypeReference<BackendResult>() {});
 
-    assertTrue(backendResult.getBackendName().contains("AAAA"));
+    assertTrue(backendResult.result());
 
-    assertEquals(response.getStatus(), 200);
+    System.out.println("ApiTestOne for url:"+hostAndPort + " saw backend:" + backendResult.getBackendName());
   }
 }

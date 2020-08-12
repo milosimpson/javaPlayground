@@ -21,11 +21,12 @@ public class DummyConfig extends RestConfig {
     return params;
   }
 
-  public static Map<String,String> getParams(String backend) {
+  public static Map<String,String> getParams(String backend, int port) {
     Map<String,String> params = new HashMap<>();
     params.put("authentication.method", "NONE");
-    params.put("advertised.listeners", "localhost:8080");
-    params.put("backend", "backend");
+    params.put("listeners", "http://localhost:" + port);
+    params.put("advertised.listeners", "http://localhost:" + port);
+    params.put("backend", backend);
     return params;
   }
 
