@@ -2,16 +2,26 @@
 
 <suite name="Api-Backend-Int-testSuite">
 
-  <!-- Parameters that are used by @BeforeSuite have to defined at the suite level -->
-  <!-- They are also available to the individual tests, i.e. ApiTest can get passed the port to use -->
-  <parameter name="backendType" value="A"/>
-  <parameter name="port" value="8081"/>
+  <parameter name="backendType" value="A"/> <!-- only used by Suite class -->
+  <parameter name="port" value="8081"/> <!-- used by both Suite and Test classes -->
 
   <test name="Backend-A-Int-Tests" parallel="classes" thread-count="2">
 
     <packages>
       <package name="org.kikkoman.parity.integration.*"/>
     </packages>
+
+    <!-- To run/debug a single test:
+      1) comment the above <packages> definition
+      2) uncomment the below <classes> definition
+      3) update test class to the one you want to run
+      4) right-click run this file from Intellij
+     -->
+
+      <!--    <classes>-->
+      <!--      <class name="org.kikkoman.parity.integration.ApiParitySuite"/>-->
+      <!--      <class name="org.kikkoman.parity.integration.ApiTestOne"/>-->
+      <!--    </classes>-->
 
   </test>
 

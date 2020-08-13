@@ -17,7 +17,7 @@ public class SimpleBackendUnitTest {
   private Backend backend;
 
   @BeforeClass
-  // This gets injected from the test suite config xml file
+  // This "Parameter" gets injected from the test suite config xml file
   @Parameters({ "backendType" })
   // the Optional / default value, allows developers to run this test by itself / from IDE
   //

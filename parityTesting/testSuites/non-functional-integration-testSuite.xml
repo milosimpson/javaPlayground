@@ -1,0 +1,38 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!-- Example, busted/non-functional suite config to highlight suite level Properties gotcha -->
+<suite name="Busted-Api-Backend-Int-testSuite">
+
+  <!-- Idea is to have two <test> tags defined and set backendType and port in each. -->
+  <test name="Backend-A-Int-Tests" parallel="classes" thread-count="2">
+
+    <parameter name="backendType" value="A"/>
+    <parameter name="port" value="8081"/>
+
+    <packages>
+
+      <!-- Test classes see backendType:A, port:8081 -->
+      <!-- Suite class sees backendType:A, port:8081 -->
+      <package name="org.kikkoman.parity.integration.*"/>
+    </packages>
+
+  </test>
+
+  <test name="Backend-B-Int-Tests" parallel="classes" thread-count="2">
+
+    <parameter name="backendType" value="B"/>
+    <parameter name="port" value="8082"/>
+
+    <packages>
+
+      <!-- Test classes see backendType:B, port:8082 -->
+      <!-- Suite class sees backendType:A, port:8081, which is bad. -->
+      <!-- I can see testNg caching / maintaining different "contexts" between Suite level and
+           Test level annotations/lookups. -->
+
+      <package name="org.kikkoman.parity.integration.*"/>
+    </packages>
+
+  </test>
+
+</suite>

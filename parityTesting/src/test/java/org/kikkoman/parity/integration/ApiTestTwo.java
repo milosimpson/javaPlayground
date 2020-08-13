@@ -50,6 +50,8 @@ public class ApiTestTwo {
   }
 
   @Test(dataProvider = "provideData")
+  // These test params are visible in test reports and on the build console with
+  //   org.kikkoman.parity.util.ConsoleListener class running/outputting to console
   public void verifyCallTwo(String backendType,  String portStr) throws Exception {
 
     System.out.println();
