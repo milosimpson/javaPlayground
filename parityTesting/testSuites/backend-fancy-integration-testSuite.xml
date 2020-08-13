@@ -1,0 +1,20 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Api-Fancy-Backend-Int-testSuite">
+
+  <!-- Param that "fancy" tests can use to determine if they are being run from a suite or Intellij -->
+  <parameter name="paramSource" value="config"/>
+
+  <parameter name="backendType" value="A"/> <!-- only used by Suite class -->
+  <parameter name="port" value="8083"/> <!-- used by both Suite and Test classes -->
+
+  <test name="Backend-A-Int-Tests" parallel="classes" thread-count="2">
+
+      <classes>
+        <class name="org.kikkoman.parity.integration.ApiParitySuite"/>
+        <class name="org.kikkoman.parity.fancy.ApiTestFancy"/>
+      </classes>
+
+  </test>
+
+</suite>

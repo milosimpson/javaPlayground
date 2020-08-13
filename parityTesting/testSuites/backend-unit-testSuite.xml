@@ -1,12 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
-<!-- Because we can, Have TestNG run each <test> in parallel -->
+<!-- Because we can, have TestNG run each <test> in parallel -->
 <suite name="Backend-unit-testSuite" parallel="tests" thread-count="2">
 
 
-  <!-- Because we can, for all the test classes found, run them in parallel at the test method level-->
+  <!-- Because we can, run tests in parallel at the test method level-->
   <test name="Backend-A-Tests" parallel="methods" thread-count="2">
 
+    <!-- Tests are setup to be injected with "backendType" param. -->
     <parameter name="backendType" value="A"/>
     <packages>
       <package name="org.kikkoman.parity.unit.*"/>

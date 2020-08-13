@@ -72,6 +72,7 @@
           <suiteXmlFiles>
             <file>testSuites/backend-A-integration-testSuite.xml</file>
             <file>testSuites/backend-B-integration-testSuite.xml</file>
+            <file>testSuites/backend-fancy-integration-testSuite.xml</file>
           </suiteXmlFiles>
           <properties>
             <property>

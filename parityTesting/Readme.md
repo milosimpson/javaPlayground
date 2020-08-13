@@ -68,6 +68,9 @@ Two ways to tackle this
    
    See the commented out <classes> definition in [suite A](testSuites/backend-A-integration-testSuite.xml) 
    
-2) do something fancy in the tests, such that they can tell they are not being run as part of a Suite.
+2) do something fancy in the tests, such that they can tell they are not being run as part of a Suite
+   and "automatically" start/stop the Api.
 
-   
+   This is possible, has a bunch of boilerplate.
+   See [FancyApiTest](src/test/java/org/kikkoman/parity/fancy/ApiTestFancy.java) and 
+   [fancySuiteFile](testSuites/backend-fancy-integration-testSuite.xml) 
